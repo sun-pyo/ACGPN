@@ -22,11 +22,13 @@ class AlignedDataset(BaseDataset):
         # load data list from pairs file
         human_names = []
         cloth_names = []
-        with open(os.path.join(opt.dataroot, opt.datapairs), 'r') as f:
-            for line in f.readlines():
-                h_name, c_name = line.strip().split()
-                human_names.append(h_name)
-                cloth_names.append(c_name)
+        # with open(os.path.join(opt.dataroot, opt.datapairs), 'r') as f:
+        #     for line in f.readlines():
+        #         h_name, c_name = line.strip().split()
+        #         human_names.append(h_name)
+        #         cloth_names.append(c_name)
+        human_names.append(opt.input_human) # 000001_0.jpg
+        cloth_names.append(opt.input_cloth) # 001744_1.jpg
         self.human_names = human_names
         self.cloth_names = cloth_names
         self.dataset_size = len(human_names)

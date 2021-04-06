@@ -26,4 +26,8 @@ class TestOptions(BaseOptions):
                                  help="run serialized TRT engine")
         self.parser.add_argument(
             "--onnx", type=str, help="run ONNX model via TRT")
+        self.parser.add_argument(
+            '-ih','--input_human', type=str, required=True,)
+        self.parser.add_argument(
+            'ic','--input_cloth', type=str, required=True,)
         self.isTrain = False
