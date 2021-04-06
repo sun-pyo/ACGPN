@@ -20,45 +20,46 @@ class AlignedDataset(BaseDataset):
         self.radius = 5
 
         # load data list from pairs file
-        human_names = []
-        cloth_names = []
+        # human_names = []
+        # cloth_names = []
         # with open(os.path.join(opt.dataroot, opt.datapairs), 'r') as f:
         #     for line in f.readlines():
         #         h_name, c_name = line.strip().split()
         #         human_names.append(h_name)
         #         cloth_names.append(c_name)
-        human_names.append(opt.input_human) # 000001_0.jpg
-        cloth_names.append(opt.input_cloth) # 001744_1.jpg
-        self.human_names = human_names
-        self.cloth_names = cloth_names
-        self.dataset_size = len(human_names)
+        #human_names.append(opt.input_human) # 000001_0.jpg
+        #cloth_names.append(opt.input_cloth) # 001744_1.jpg
+        self.human_name = opt.input_human
+        self.cloth_name = opt.input_cloth
+        self.dataset_size = 1
 
         # input A (label maps)
         dir_A = '_A' if self.opt.label_nc == 0 else '_label'
         self.dir_A = os.path.join(opt.dataroot, opt.phase + dir_A)
-        self.A_paths = sorted(make_dataset(self.dir_A))
-
+        #self.A_paths = sorted(make_dataset(self.dir_A))
+        self.A_path = self.dir_A + '/' + self.human_name
         self.fine_height = 256
         self.fine_width = 192
         self.radius = 5
 
         # input A test (label maps)
-        dir_A = '_A' if self.opt.label_nc == 0 else '_label'
-        self.dir_A = os.path.join(opt.dataroot, opt.phase + dir_A)
-        self.A_paths = sorted(make_dataset_test(self.dir_A))
-
+        # dir_A = '_A' if self.opt.label_nc == 0 else '_label'
+        # self.dir_A = os.path.join(opt.dataroot, opt.phase + dir_A)
+        #self.A_paths = sorted(make_dataset_test(self.dir_A))
+        
         # input B (real images)
         dir_B = '_B' if self.opt.label_nc == 0 else '_img'
         self.dir_B = os.path.join(opt.dataroot, opt.phase + dir_B)
-        self.B_paths = sorted(make_dataset(self.dir_B))
-
-        self.dataset_size = len(self.A_paths)
-        self.build_index(self.B_paths)
+        #self.B_paths = sorted(make_dataset(self.dir_B))
+        self.B_path = self.dir_B + '/' + self.human_name
+        #self.dataset_size = len(self.A_paths)
+        #self.build_index(self.B_paths)
 
         dir_E = '_edge'
         self.dir_E = os.path.join(opt.dataroot, opt.phase + dir_E)
-        self.E_paths = sorted(make_dataset(self.dir_E))
-        self.ER_paths = make_dataset(self.dir_E)
+        self.E_path = self.dir_E + '/' + self.cloth_name
+        #self.E_paths = sorted(make_dataset(self.dir_E))
+        #self.ER_paths = make_dataset(self.dir_E)
 
         # dir_M = '_mask'
         # self.dir_M = os.path.join(opt.dataroot, opt.phase + dir_M)
@@ -72,13 +73,14 @@ class AlignedDataset(BaseDataset):
 
         dir_C = '_color'
         self.dir_C = os.path.join(opt.dataroot, opt.phase + dir_C)
-        self.C_paths = sorted(make_dataset(self.dir_C))
-        self.CR_paths = make_dataset(self.dir_C)
+        self.C_path = self.dir_C + '/' + self.cloth_name
+        #self.C_paths = sorted(make_dataset(self.dir_C))
+        #self.CR_paths = make_dataset(self.dir_C)
         # self.build_index(self.C_paths)
 
-        dir_A = '_A' if self.opt.label_nc == 0 else '_label'
-        self.dir_A = os.path.join(opt.dataroot, opt.phase + dir_A)
-        self.A_paths = sorted(make_dataset_test(self.dir_A))
+        # dir_A = '_A' if self.opt.label_nc == 0 else '_label'
+        # self.dir_A = os.path.join(opt.dataroot, opt.phase + dir_A)
+        # self.A_paths = sorted(make_dataset_test(self.dir_A))
 
     def random_sample(self, item):
         name = item.split('/')[-1]
@@ -119,8 +121,8 @@ class AlignedDataset(BaseDataset):
         #        break
 
         # get names from the pairs file
-        c_name = self.cloth_names[index]
-        h_name = self.human_names[index]
+        c_name = self.cloth_name
+        h_name = self.human_name
 
         # A_path = self.A_paths[index]
         A_path = osp.join(self.dir_A, h_name.replace(".jpg", ".png"))
@@ -135,7 +137,9 @@ class AlignedDataset(BaseDataset):
                 self.opt, params, method=Image.NEAREST, normalize=False)
             A_tensor = transform_A(A) * 255.0
 
-        B_tensor = inst_tensor = feat_tensor = 0
+        B_tensor = 0
+        inst_tensor = 0
+        feat_tensor = 0
         # input B (real images)
 
         # B_path = self.B_paths[index]
