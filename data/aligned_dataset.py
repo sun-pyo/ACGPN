@@ -220,7 +220,7 @@ class AlignedDataset(BaseDataset):
         return input_dict
 
     def __len__(self):
-        return len(self.A_paths) // self.opt.batchSize * self.opt.batchSize
+        return 1 #len(self.A_paths) // self.opt.batchSize * self.opt.batchSize
 
     def name(self):
         return 'AlignedDataset'
