@@ -94,13 +94,20 @@ def main():
             (data['label'].cpu().numpy() == 4).astype(np.int))
         mask_fore = torch.FloatTensor(
             (data['label'].cpu().numpy() > 0).astype(np.int))
+        mask_back = torch.FloatTensor(
+            (data['label'].cpu().numpy() == 0).astype(np.int))
+
         img_fore = data['image'] * mask_fore
-        img_fore_wc = img_fore * mask_fore
+        img_back = data['image'] * mask_back
+
         all_clothes_label = changearm(data['label'])
 
         ############## Forward Pass ######################
         fake_image, warped_cloth, refined_cloth = model(Variable(data['label'].cuda()), Variable(data['edge'].cuda()), Variable(img_fore.cuda()), Variable(
             mask_clothes.cuda()), Variable(data['color'].cuda()), Variable(all_clothes_label.cuda()), Variable(data['image'].cuda()), Variable(data['pose'].cuda()), Variable(data['image'].cuda()), Variable(mask_fore.cuda()))
+
+        # Restore Background 
+        fake_image = fake_image*mask_fore.cuda() + img_back.cuda()
 
         # make output folders
         output_dir = os.path.join(opt.results_dir, opt.phase)
