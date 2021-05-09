@@ -107,19 +107,6 @@ class AlignedDataset(BaseDataset):
                         self.diction[name].append(d)
 
     def __getitem__(self, index):
-        train_mask = 9600
-        # input A (label maps)
-        box = []
-        # for k,x in enumerate(self.A_paths):
-        #     if '000386' in x :
-        #         index=k
-        #         break
-        test = np.random.randint(2032)
-        # for k, s in enumerate(self.B_paths):
-        #    if '006581' in s:
-        #        test = k
-        #        break
-
         # get names from the pairs file
         c_name = self.cloth_name
         h_name = self.human_name
